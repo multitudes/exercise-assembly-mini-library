@@ -82,7 +82,7 @@ compiling with
 gcc -Og -S ft_strlen.c
 ```
 
-I get 
+I get the ATT style
 ```
 	.file	"ft_strlen.c"
 	.text
@@ -168,7 +168,10 @@ using
 gcc main.c ft_strlen.o -o test_strlen
 ```
 
-I get the code working. But this is ATT style.
+I get the code working. But this is ATT style. To get it into nasm style I use 
+```
+cc -Og -S -masm=intel  ft_strlen.c
+```
 
 Lets see how it looks like with the intel style, this is the minimum required:
 ```
@@ -224,3 +227,55 @@ nasm -f elf64 ft_strlen.s -o ft_strlen.o
 cc main.c ft_strlen.o -o test_strlen 
 ./test_strlen 
 ```
+
+## PIE (Position-Independent Executable) compatibility
+
+This is a big one. It would be easy to declare the 
+```
+extern __errno_location
+```
+in our code and then use the --no-pie flag to call the function directly but we are not allowed to use the flag. why? because the PIE is better.
+PIE-compatible code is considered much safer.
+
+Here’s a breakdown of why:
+
+1. The Old Way: Predictable Memory Addresses
+
+Without PIE (i.e., when you use --no-pie), your program is compiled to load at a fixed, predictable memory address every single time it runs. An attacker who finds a vulnerability in your program (like a buffer overflow) knows exactly where your functions and data are in memory.
+
+This makes it dangerously easy for them to hijack the program's execution by overwriting a return address on the stack to point to a specific known location, a technique used in many exploits.
+
+2. The New Way (PIE): Address Space Layout Randomization (ASLR)
+
+Modern operating systems use a security feature called Address Space Layout Randomization (ASLR). ASLR randomizes the memory locations of a program's key areas—like the stack, heap, and linked libraries—each time it's launched.
+
+However, for ASLR to be fully effective, the main program executable itself must also be loaded at a random address. This is only possible if the executable is a Position-Independent Executable (PIE).
+
+Why PIE is Safer
+
+By compiling your code as a PIE, you allow the operating system to load your entire program at a different memory address every time.
+
+    Before (with --no-pie): An attacker knows your ft_read function is always at address 0x400510.
+
+    After (with PIE): An attacker has no idea where ft_read is. It could be at 0x55c3a19e8000 on one run and 0x56a4b28f7000 on the next.
+
+This randomization makes it incredibly difficult for an attacker to successfully execute malicious code. If they try to jump to a hardcoded address, the program will most likely just crash instead of being exploited.
+
+In summary, you are encouraged to write PIE-compatible code (and avoid --no-pe) because it opts your program into a critical, modern security feature that protects it from a large class of common memory-corruption attacks.
+
+But it requires some tewaks in our code.  not much. 
+```
+    ; Get the memory address of the global `errno` variable from libc.
+    ; The 'wrt ..plt' syntax on the call is essential for PIE compatibility.
+    call __errno_location wrt ..plt
+```
+This memory address is passed at runtime
+The line call __errno_location wrt ..plt is precisely the mechanism that finds the address of the __errno_location function and executes it at runtime.
+
+Here's a slightly more detailed breakdown of why this is necessary:
+
+    Dynamic Linking: Your program doesn't contain the code for __errno_location; that code lives in the C standard library (libc), which is loaded into memory separately when your program starts.
+
+    Unknown Address: Because of ASLR (Address Space Layout Randomization), neither your program nor the C library knows its own final memory address until the OS loader puts them there at runtime.
+
+    The PLT's Job: The PLT (Procedure Linkage Table) acts as a middleman. Your call instruction doesn't jump directly to the final address (which it can't know). Instead, it jumps to a small stub of code in the PLT. This stub's job is to look up the current, real-time address of __errno_location and then jump to it.

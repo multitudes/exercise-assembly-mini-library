@@ -14,7 +14,7 @@ global	ft_read
 ; To link with C library functions like __errno_location in a PIE binary,
 ; we must declare them as external and specify that the call will be routed
 ; through the Procedure Linkage Table (PLT).
-extern __errno_location
+extern __errno_location wrt ..plt
 
 ft_read:               
 	mov	rax, 0                  ; syscall number for read

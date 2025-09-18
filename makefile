@@ -2,6 +2,7 @@ NAME = libasm/libasm.a
 
 SRCS = $(addprefix libasm/, ft_strlen.s ft_write.s ft_read.s ft_strcpy.s ft_strdup.s ft_strcmp.s)
 OBJS = $(SRCS:.s=.o)
+# CFLAGS = -fPIE
 # DEBUG_NASM = -g -F dwarf
 
 all: $(NAME)
