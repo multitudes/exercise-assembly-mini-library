@@ -168,4 +168,59 @@ using
 gcc main.c ft_strlen.o -o test_strlen
 ```
 
-I get the code working. But thius is ATT style.
+I get the code working. But this is ATT style.
+
+Lets see how it looks like with the intel style, this is the minimum required:
+```
+	.intel_syntax noprefix
+	.text
+	.globl	ft_strlen
+ft_strlen:
+	xor	eax, eax
+	jmp	.L2
+.L1:
+	add	rax, 1
+.L2:
+	cmp	BYTE PTR [rdi+rax], 0
+	jne	.L1
+    ret
+```
+
+but this is not the end because the subject wants to use nasm so the code will be different again even if it is in the same intel family. This is the minimal code required for strlen:
+```
+section .text
+global ft_strlen
+
+ft_strlen:
+    xor rax, rax            ; Initialize counter 'rax' to 0
+
+.loop:
+    cmp byte [rdi + rax], 0 ; Compare the character at s[rax] with the null terminator
+    je .end                 ; If it's the end of the string, jump to .end
+    inc rax                 ; Otherwise, increment the counter
+    jmp .loop               ; Repeat the loop
+
+.end:
+    ret                     ; Return the count in 'rax'
+```
+NB:  
+I dont handle the case if str is NULL because not handled in the orig strlen().
+
+
+NASM (Netwide Assembler) is a standalone assembler for x86 and x86-64 architectures. It uses Intel syntax and is designed for writing low-level assembly code directly.
+
+GCC (GNU Compiler Collection) is a C/C++ compiler that can also assemble code, but it uses the GNU assembler (GAS), which defaults to AT&T syntax and supports different directives and conventions.
+
+**Key differences:**
+- NASM uses Intel syntax (e.g., `mov bl, [rdi + rax]`), while GCC/GAS uses AT&T syntax (e.g., `movb (%rdi,%rax), %bl`).
+- NASM requires explicit section and global declarations (`section .text`, `global`).
+- GCC can compile C and link with assembly, but expects GAS/AT&T syntax in `.s` files by default.
+- NASM is more strict and minimal, while GCC/GAS supports more high-level features and debugging info.
+
+to compile i use now:
+```
+nasm -f elf64 ft_strlen.s -o ft_strlen.o
+# using gcc to compile
+cc main.c ft_strlen.o -o test_strlen 
+./test_strlen 
+```

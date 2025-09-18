@@ -7,9 +7,12 @@
 // }
 
 #include <stdio.h>
+#include "libasm/libasm.h"
 extern size_t ft_strlen(const char *s);
 
 int main() {
-    printf("%zu\n", ft_strlen("hello"));
+    printf("hello is %zu lang\n", ft_strlen("hello"));
+    printf("empty string is %zu chars\n", ft_strlen(""));
+    // printf("%zu\n", ft_strlen(NULL));
     return 0;
 }
