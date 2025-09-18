@@ -35,5 +35,11 @@ int main() {
     write(1, buffer, bytesRead); // Write to standard output
     write(1, "\n", 1); // Newline for clarity
     close(fd);
+
+    char *src = "Hello, World!";
+    char dest[5];
+    ft_strcpy(dest, src);
+    printf("Copied string: %s\n", dest);
+
     return 0;
 }
