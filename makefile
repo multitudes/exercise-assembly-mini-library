@@ -11,6 +11,8 @@ $(NAME): $(OBJS)
 %.o: %.s
 	nasm $< -o $@
 
+bonus: all
+	
 clean:
 	rm -f $(OBJS)
 

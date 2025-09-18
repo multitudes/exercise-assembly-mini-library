@@ -38,3 +38,134 @@ The compilation flag -no-pie disables Position Independent Executable (PIE) gene
 
 If you use -no-pie, the binary is not position-independent, meaning its code and data are loaded at fixed addresses. This can make certain assembly code easier to write, especially when using absolute addresses, but it reduces security and is not allowed in many coding standards (like 42's libasm) to ensure your code works with modern, secure practices.
 
+## The compilation
+Aside
+ATT versus Intel assembly-code formats
+In our presentation, we show assembly code in ATT format (named after AT&T, the company that
+operated Bell Laboratories for many years), the default format for gcc, objdump, and the other tools we
+will consider. Other programming tools, including those from Microsoft as well as the documentation
+from Intel, show assembly code in Intel format. The two formats differ in a number of ways. As an
+example, gcc can generate code in Intel format for the sum function using the following command line:
+linux> gcc -Og -S -masm=intel mstore.c
+This gives the following assembly code:
+```
+multstore:
+    push rbx
+    mov rbx, rdx
+    call mult2
+    mov QWORD PTR [rbx], rax
+    pop rbx
+    ret
+```
+We see that the Intel and ATT formats differ in the following ways:
+- The Intel code omits the size designation suffixes. We see instruction push and mov instead of pushq and movq.
+- The Intel code omits the ‘%’ character in front of register names, using rbx instead of %rbx.
+- The Intel code has a different way of describing locations in memory—for example, QWORD PTR [rbx] rather than (%rbx).
+- Instructions with multiple operands list them in the reverse order. This can be very confusing when switching between the two formats.
+Although we will not be using Intel format in our presentation, you will encounter it in documentation from Intel and Microsoft.
+
+my first function:
+```
+#include <stddef.h>
+
+size_t ft_strlen(const char *s) {
+    size_t len = 0;
+    while (s && s[len]) {
+        len++;
+    }
+    return len;
+}
+```
+
+compiling with 
+```
+gcc -Og -S ft_strlen.c
+```
+
+I get 
+```
+	.file	"ft_strlen.c"
+	.text
+	.globl	ft_strlen
+	.type	ft_strlen, @function
+ft_strlen:
+.LFB0:
+	.cfi_startproc
+	endbr64
+	movl	$0, %eax
+	jmp	.L2
+.L4:
+	addq	$1, %rax
+.L2:
+	testq	%rdi, %rdi
+	je	.L1
+	cmpb	$0, (%rdi,%rax)
+	jne	.L4
+.L1:
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	ft_strlen, .-ft_strlen
+	.ident	"GCC: (Ubuntu 10.5.0-1ubuntu1~22.04.2) 10.5.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:
+```
+but most of it is metadata so I can just keep the essential.
+so this would give me the assembly representation (ATT style)
+
+```
+    .text          # Specifies this is the executable code section
+    .globl ft_strlen # Makes the function visible to the linker
+
+ft_strlen:
+    xor  %eax, %eax         # Clears the counter register %eax to 0. 
+                            # writing to a 32-bit register (like %eax) 
+                            # automatically zeroes the upper 32 bits of %rax.
+	jmp .L2
+.L4:
+	addq $1, %rax           # Increment the counter
+.L2:
+	testq %rdi, %rdi        # Check if the pointer is NULL - equivalent to cmpq
+	je .L1                  # If NULL, jump to return  
+	cmpb $0, (%rdi,%rax)    # Compare byte at address (rdi + rax) with 0
+	jne .L4                 # if not equal keep looping
+.L1:
+	ret
+```
+to compile into an object in machine code
+```
+gcc -Og -S ft_strlen.c 
+```
+
+then compiling with a fake main like 
+```
+#include <stdio.h>
+extern size_t ft_strlen(const char *s);
+
+int main() {
+    printf("%zu\n", ft_strlen("hello"));
+    return 0;
+}
+```
+
+using
+```
+gcc main.c ft_strlen.o -o test_strlen
+```
+
+I get the code working. But thius is ATT style.
