@@ -24,7 +24,7 @@ int main() {
         perror("Error opening file");
         return 1;
     }
-    char *buffer;
+    char buffer[100];
     ssize_t bytesRead = ft_read(fd, buffer, 4);
     if (bytesRead == -1) {
         perror("Error reading file");
@@ -32,5 +32,8 @@ int main() {
         return 1;
     }
     printf("Bytes read: %zd\n", bytesRead);
+    write(1, buffer, bytesRead); // Write to standard output
+    write(1, "\n", 1); // Newline for clarity
+    close(fd);
     return 0;
 }
