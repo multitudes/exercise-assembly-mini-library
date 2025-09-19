@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 
 
 #include "libasm/libasm.h"
@@ -54,5 +55,19 @@ int main() {
     // int fail = ft_strcmp(NULL, "NULL");
     int fail = ft_strcmp(NULL, NULL);
     printf("fail is %d\n", fail);
+
+    char *res;
+    res = strdup("Hello, World!");
+    printf("Duplicated string: %s\n", res);
+    free(res);
+    // res = strdup(NULL);
+    // printf("Duplicated NULL string: %s\n", res);
+    printf("this is ft_strdup\n");
+    res = ft_strdup("Hello, World!");
+    printf("Duplicated string: %s\n", res);
+    free(res);
+    // res = ft_strdup(NULL);
+    // printf("Duplicated NULL string: %s\n", res);
+    // free(res);
     return 0;
 }

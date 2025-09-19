@@ -1,7 +1,5 @@
-section .text
+section text
 global	ft_strdup                       
-extern malloc 
-extern memcpy 
 
 ; char *ft_strdup(const char *s);
 ; ------------------------------------------
@@ -17,33 +15,33 @@ ft_strdup:
 	push	r15 
 	push	r14
 	push	rbx
-; now initialize r15 with the source string pointer (s)
+
 	mov	r15, rdi
 	xor	ebx, ebx
 
 ; -- Find the length of the string (including null terminator) --
 .len_loop:                              
 	cmp	byte [r15 + rbx], 0
-; why use lea here? add and inc also increment rbx by 1, 
-; but they do affect the CPU flags.
+	; why use lea here? add rbx, 1 and inc rbx 
+	; also increment rbx by 1, but they do affect the CPU flags.
 	lea	rbx, [rbx + 1]
 	jne	.len_loop
-; move the length of the string (in rbx) to rdi for malloc
-; rbx already includes space for the null terminator.
+	; move the length of the string (in rbx) to rdi for malloc
+	; rbx already includes space for the null terminator.
 	mov	rdi, rbx
-	call	malloc wrt ..plt
+	call	malloc
 	test	rax, rax
 	je	.exit_error
-; before calling memcpy save the source string pointer (in r14)
+	; before calling memcpy save the source string pointer (in r14)
 	mov	r14, rax
-; If rbx is zero, there is nothing to copy, 
+	; If rbx is zero, there is nothing to copy, 
 	test	rbx, rbx
 	je	.ret
-; prepare the arguments for memcpy
+	; prepare the arguments for memcpy
 	mov	rdi, r14
 	mov	rsi, r15
 	mov	rdx, rbx
-	call	memcpy wrt ..plt
+	call	memcpy@PLT
 	jmp	.ret
 .exit_error:
 	xor	r14d, r14d
