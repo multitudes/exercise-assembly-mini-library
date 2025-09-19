@@ -279,3 +279,16 @@ Here's a slightly more detailed breakdown of why this is necessary:
     Unknown Address: Because of ASLR (Address Space Layout Randomization), neither your program nor the C library knows its own final memory address until the OS loader puts them there at runtime.
 
     The PLT's Job: The PLT (Procedure Linkage Table) acts as a middleman. Your call instruction doesn't jump directly to the final address (which it can't know). Instead, it jumps to a small stub of code in the PLT. This stub's job is to look up the current, real-time address of __errno_location and then jump to it.
+
+
+	## about moving bytes
+	Yes, that's correct!
+
+- `mov cl, [r15]` loads 1 byte (8 bits) into the lower part of `rcx`.
+- `mov rcx, [r15]` loads 8 bytes (64 bits) from memory into the entire `rcx` register.
+
+So, the size of the move depends on the register you use:
+- `cl` → 8 bits
+- `cx` → 16 bits
+- `ecx` → 32 bits
+- `rcx` → 64 bits
