@@ -147,7 +147,7 @@ ft_strlen:
 .L1:
 	ret
 ```
-to compile into an object in machine code
+to compile into an object in machine code AT&T style
 ```
 gcc -Og -S ft_strlen.c 
 ```

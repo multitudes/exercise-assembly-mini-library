@@ -1,7 +1,7 @@
 section .text
 global	ft_strdup                       
 extern malloc 
-extern memcpy 
+
 
 ; char *ft_strdup(const char *s);
 ; ------------------------------------------
