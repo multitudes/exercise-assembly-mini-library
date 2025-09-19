@@ -41,5 +41,18 @@ int main() {
     ft_strcpy(dest, src);
     printf("Copied string: %s\n", dest);
 
+    char *s1 = "abcde";
+    char *s2 = "abcdf";
+    int cmpResult = ft_strcmp(s1, s2);
+    if (cmpResult < 0) {
+        printf("\"%s\" is less than \"%s\"\n", s1, s2);
+    } else if (cmpResult > 0) {
+        printf("\"%s\" is greater than \"%s\"\n", s1, s2);
+    } else {
+        printf("\"%s\" is equal to \"%s\"\n", s1, s2);
+    }
+    // int fail = ft_strcmp(NULL, "NULL");
+    int fail = ft_strcmp(NULL, NULL);
+    printf("fail is %d\n", fail);
     return 0;
 }

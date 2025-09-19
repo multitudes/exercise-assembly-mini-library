@@ -251,7 +251,7 @@ Modern operating systems use a security feature called Address Space Layout Rand
 
 However, for ASLR to be fully effective, the main program executable itself must also be loaded at a random address. This is only possible if the executable is a Position-Independent Executable (PIE).
 
-Why PIE is Safer
+## Why PIE is Safer
 
 By compiling your code as a PIE, you allow the operating system to load your entire program at a different memory address every time.
 
