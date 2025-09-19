@@ -35,7 +35,7 @@ int main() {
     }
     printf("Bytes read: %zd\n", bytesRead);
     write(1, buffer, bytesRead); // Write to standard output
-    write(1, "\n", 1); // Newline for clarity
+    write(1, "\n", 1); 
     close(fd);
 
     char *src = "Hello, World!";
@@ -70,5 +70,16 @@ int main() {
     // res = ft_strdup(NULL);
     // printf("Duplicated NULL string: %s\n", res);
     // free(res);
+
+    ft_putnbr_base(-2147483648, "0123456789ABCDEF");
+    write(1, "\n", 1); 
+    ft_putnbr_base(42, "0123456789");
+    write(1, "\n", 1); 
+    ft_putnbr_base(-42, "0123456789");
+    write(1, "\n", 1); 
+    ft_putnbr_base(255, "01");
+    write(1, "\n", 1); 
+    ft_putnbr_base(100, "poneyvif");
+    write(1, "\n", 1); 
     return 0;
 }

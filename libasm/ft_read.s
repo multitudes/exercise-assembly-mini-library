@@ -1,6 +1,8 @@
 section	.text
 global	ft_read  
 
+extern __errno_location
+
 ; ft_read(int rdi, void *rsi, size_t rdx)
 ; ------------------------------------------
 ; Behaves like the C read() function.
@@ -14,7 +16,6 @@ global	ft_read
 ; To link with C library functions like __errno_location in a PIE binary,
 ; we must declare them as external and specify that the call will be routed
 ; through the Procedure Linkage Table (PLT).
-extern __errno_location
 
 ft_read:               
 	mov	rax, 0                  ; syscall number for read
