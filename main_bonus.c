@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include "libasm/libasm_bonus.h"
 
 
@@ -38,6 +39,14 @@ int main() {
     printf("List size: %d\n", size);
     size = ft_list_size(NULL);
     printf("Size of NULL list: %d\n", size);
-    
+
+    printf("----- FT_LIST_SORT -----\n");
+    int (*cmp)(const char *, const char *) = (int (*)(const char *, const char *))strcmp;
+    ft_list_sort(&list, (int (*)())cmp);
+    current = list;
+    while (current) {
+        printf("Node data: %s\n", (char *)current->data);
+        current = current->next;
+    }
     return 0;
 }
