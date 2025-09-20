@@ -292,3 +292,27 @@ So, the size of the move depends on the register you use:
 - `cx` → 16 bits
 - `ecx` → 32 bits
 - `rcx` → 64 bits
+
+
+## reading the data from a pointer
+Yes, there are different size specifiers in NASM for different data sizes:
+
+**NASM size specifiers:**
+- `byte [addr]` = 8 bits (1 byte)
+- `word [addr]` = 16 bits (2 bytes) 
+- `dword [addr]` = 32 bits (4 bytes) - "double word"
+- `qword [addr]` = 64 bits (8 bytes) - "quad word"
+- `tword [addr]` = 80 bits (10 bytes) - "ten bytes" (for x87 floating point)
+- `oword [addr]` = 128 bits (16 bytes) - "octa word" (for SSE)
+- `yword [addr]` = 256 bits (32 bytes) - for AVX
+- `zword [addr]` = 512 bits (64 bytes) - for AVX-512
+
+
+**In your code:**
+```nasm
+mov qword [rax], rbp    ; store 64-bit data pointer
+mov qword 8[rax], rdx   ; store 64-bit next pointer
+```
+
+**Summary:**  
+The progression is: `byte` → `word` → `dword` → `qword` → `tword` → `oword` → `yword` → `zword`. No `lword` exists.

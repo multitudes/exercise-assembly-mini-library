@@ -33,5 +33,11 @@ int main() {
         printf("Node data: %s\n", (char *)current->data);
         current = current->next;
     } 
+    printf("----- FT_LIST_SIZE -----\n");
+    int size = ft_list_size(list);
+    printf("List size: %d\n", size);
+    size = ft_list_size(NULL);
+    printf("Size of NULL list: %d\n", size);
+    
     return 0;
 }
