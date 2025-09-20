@@ -1,26 +1,35 @@
-// need change to void
-// ft_list_push_front(t_list **begin_list, void *data);
+#include <stddef.h>
+#include <stdlib.h>
+
+typedef struct      s_list {
+    void            *data;
+    struct s_list   *next;
+}                   t_list;
 
 
 /**
- * ft_lstadd_front - Add a new node at the beginning of a linked list.
+ * ft_list_push_front - Add a new node at the beginning of a linked list.
  *
  * Arguments:
- *   lst:  The address of a pointer to the first link of a list.
- *   new_node: The address of a pointer to the node to be added to the list.
+ *   begin_list: The address of a pointer to the first link of a list.
+ *   data: The data to store in the new node.
  *
  * Returns:
  *   None.
  *
  * Description:
- *   Adds the node 'new_node' at the beginning of the list.
+ *   Creates a new node with 'data' and adds it at the beginning of the list.
  */
-void	ft_lstadd_front(t_list **lst, t_list *new_node)
+void	ft_list_push_front(t_list **begin_list, void *data)
 {
-	if (new_node != NULL && *lst != NULL)
-	{
-		(*lst)->prev = new_node;
-		new_node->next = *lst;
-	}
-	*lst = new_node;
+	t_list *new_node;
+	if (!begin_list)
+		return;
+
+	new_node = (t_list *)malloc(sizeof(t_list));
+	if (!new_node)
+		return;
+	new_node->data = data;
+	new_node->next = *begin_list;
+	*begin_list = new_node;
 }

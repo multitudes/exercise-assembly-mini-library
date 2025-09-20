@@ -1,26 +1,21 @@
-// #include <stdio.h>
-
-
-// int main() {
-//     size_t len = ft_strlen("Hello, World!");
-//     printf("Length: %zu\n", len);
-// }
-
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 
-
 #include "libasm/libasm.h"
-extern size_t ft_strlen(const char *s);
 
 int main() {
-    // printf("hello is %zu lang\n", ft_strlen("hello"));
-    // printf("empty string is %zu chars\n", ft_strlen(""));
-    // printf("%zu\n", ft_strlen(NULL));
+    printf("----- FT_STRLEN -----\n");
 
+    const char *testStr = "Hello, World!";
+    size_t len = ft_strlen(testStr);
+    printf("Length of \"%s\" is %zu\n", testStr, len);
+    len = ft_strlen("");
+    printf("Length of empty string is %zu\n", len);
+
+    printf("----- FT_READ -----\n");
     int fd = open("text.txt", O_RDONLY);
     if (fd == -1) {
         perror("Error opening file");
@@ -34,15 +29,19 @@ int main() {
         return 1;
     }
     printf("Bytes read: %zd\n", bytesRead);
-    write(1, buffer, bytesRead); // Write to standard output
-    write(1, "\n", 1); 
+    printf("----- FT_WRITE -----\n");
+
+    ft_write(1, buffer, bytesRead); // Write to standard output
+    ft_write(1, "\n", 1); 
     close(fd);
 
+    printf("----- FT_STRCPY -----\n");
     char *src = "Hello, World!";
     char dest[5];
     ft_strcpy(dest, src);
     printf("Copied string: %s\n", dest);
 
+    printf("----- FT_STRCMP -----\n");
     char *s1 = "abcde";
     char *s2 = "abcdf";
     int cmpResult = ft_strcmp(s1, s2);
@@ -57,29 +56,21 @@ int main() {
     int fail = ft_strcmp(NULL, NULL);
     printf("fail is %d\n", fail);
 
+    printf("----- FT_STRDUP -----\n");
     char *res;
     res = strdup("Hello, World!");
     printf("Duplicated string: %s\n", res);
     free(res);
     // res = strdup(NULL);
     // printf("Duplicated NULL string: %s\n", res);
-    printf("this is ft_strdup\n");
-    res = ft_strdup("Hello, World!");
+  
+    res = ft_strdup("Welcome to 42 Berlin !!!");
     printf("Duplicated string: %s\n", res);
     free(res);
     // res = ft_strdup(NULL);
     // printf("Duplicated NULL string: %s\n", res);
     // free(res);
 
-    ft_putnbr_base(-2147483648, "0123456789ABCDEF");
-    write(1, "\n", 1); 
-    ft_putnbr_base(42, "0123456789");
-    write(1, "\n", 1); 
-    ft_putnbr_base(-42, "0123456789");
-    write(1, "\n", 1); 
-    ft_putnbr_base(255, "01");
-    write(1, "\n", 1); 
-    ft_putnbr_base(100, "poneyvif");
-    write(1, "\n", 1); 
+
     return 0;
 }

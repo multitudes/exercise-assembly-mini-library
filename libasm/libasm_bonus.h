@@ -1,10 +1,10 @@
-#ifndef _BONUS_H
-#define _BONUS_H
+#ifndef LIBASM_BONUS_H
+#define LIBASM_BONUS_H
 
 typedef struct      s_list {
     void            *data;
     struct s_list   *next;
-}                   t_list
+}                   t_list;
 
 void    ft_putnbr_base(int nbr, char *base);
 void    ft_list_push_front(t_list **begin_list, void *data);
