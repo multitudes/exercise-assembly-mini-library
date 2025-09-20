@@ -1,16 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_list_size.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lbrusa <lbrusa@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/11 18:00:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2025/09/19 14:38:07 by lbrusa           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "libft.h"
+#include <stddef.h>
+
+typedef struct      s_list {
+    void            *data;
+    struct s_list   *next;
+}                   t_list;
+
 
 /**
  * ft_lstsize - Count the number of nodes in a linked list.
@@ -28,10 +23,10 @@ int	ft_list_size(t_list *lst)
 {
 	int	i;
 
-	i = 1;
 	if (lst == NULL)
 		return (0);
-	while (lst->next != NULL)
+	i = 1;
+	while (lst->next)
 	{
 		lst = lst->next;
 		i++;

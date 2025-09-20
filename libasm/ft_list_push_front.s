@@ -3,10 +3,18 @@ global	ft_list_push_front
 
 extern malloc
 
+; ft_list_push_front(t_list **begin_list, void *data)
+; ------------------------------------------
+; Adds a new element at the beginning of the list.
+; Arguments are passed via registers by the caller:
+;   rdi: pointer to the head of the list (t_list **begin_list)
+;   rsi: pointer to the data to be stored in the new element (void *data)
+; Returns: nothing
+
 ft_list_push_front:
-	test	rdi, rdi
-	je	.L4
-	push	rbp
+	test	rdi, rdi		; null pointer check for begin_list
+	je		.ret			; if null, just return
+	push	rbp				;
 	push	rbx
 	sub	rsp, 8
 	mov	rbx, rdi
@@ -24,5 +32,5 @@ ft_list_push_front:
 	pop	rbx
 	pop	rbp
 	ret
-.L4:
+.ret:
 	ret

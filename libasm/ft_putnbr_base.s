@@ -1,5 +1,4 @@
 section .text
-
 global ft_putnbr_base
 
 extern ft_write
