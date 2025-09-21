@@ -26,7 +26,7 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-	rm -f test_strlen bonus
+	rm -f test_strlen bonus main
 
 re: fclean all
 
