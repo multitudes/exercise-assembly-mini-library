@@ -47,12 +47,11 @@ typedef struct s_list {
 } t_list;
 ```
 
-You will also implement these bonus functions:
-- atoi_base (see Annex V.1)
-- list_push_front (see Annex V.2)
-- list_size (see Annex V.3)
-- list_sort (see Annex V.4)
-- list_remove_if (see Annex V.5)
+- atoi_base - convert an integer to different bases
+- list_push_front
+- list_size 
+- list_sort 
+- list_remove_if - remove a node if a compare function says the node is same
 
 Error handling:
 - Check for errors during syscalls and handle them properly
@@ -79,8 +78,9 @@ gcc -Og -S -masm=intel mstore.c
 >- The Intel code has a different way of describing locations in memory—for example, QWORD PTR [rbx] rather than (%rbx).
 >- Instructions with multiple operands list them in the reverse order. This can be very confusing when switching between the two formats.
 
+Yes it is quite confusing! 
 
-## Starting with strlen
+## Starting with my version of strlen
 
 Example C implementation:
 ```c
