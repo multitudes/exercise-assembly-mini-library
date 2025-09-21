@@ -8,7 +8,7 @@ typedef struct      s_list {
 
 
 /**
- * ft_lstsize - Count the number of nodes in a linked list.
+ * lstsize - Count the number of nodes in a linked list.
  *
  * Arguments:
  *   lst: The beginning of the list.
@@ -19,7 +19,7 @@ typedef struct      s_list {
  * Description:
  *   Iterates through the list and returns the total number of nodes.
  */
-int	ft_list_size(t_list *lst)
+int	list_size(t_list *lst)
 {
 	int	i;
 

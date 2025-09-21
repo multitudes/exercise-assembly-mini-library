@@ -1,7 +1,7 @@
 section .text
-global ft_strlen
+global strlen
 
-ft_strlen:
+strlen:
     xor rax, rax            ; Initialize counter 'rax' to 0
 
 .loop:

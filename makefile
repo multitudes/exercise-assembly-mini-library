@@ -1,7 +1,7 @@
 NAME = libasm/libasm.a
 
-SRCS = $(addprefix libasm/, ft_strlen.s ft_write.s ft_read.s ft_strcpy.s ft_strdup.s ft_strcmp.s)
-SRCS_BONUS = $(addprefix libasm/, ft_putnbr_base.s ft_list_push_front.s ft_list_size.s ft_list_sort.s ft_list_remove_if.s)
+SRCS = $(addprefix libasm/, strlen.s write.s read.s strcpy.s strdup.s strcmp.s)
+SRCS_BONUS = $(addprefix libasm/, putnbr_base.s list_push_front.s list_size.s list_sort.s list_remove_if.s)
 
 OBJS = $(SRCS:.s=.o)
 OBJS_BONUS = $(SRCS_BONUS:.s=.o)

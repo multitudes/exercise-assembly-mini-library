@@ -1,9 +1,9 @@
 section	.text
-global	ft_list_remove_if    
+global	list_remove_if    
 
 extern free
 
-; ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *))
+; list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *))
 ; ------------------------------------------
 ; Removes from the list all elements for which the comparison function returns 0
 ; Arguments are passed via registers by the caller:
@@ -16,7 +16,7 @@ extern free
 ; our function must preserve their values if you use them
 
 
-ft_list_remove_if:                      
+list_remove_if:                      
 	push	rbp
 	push	r15
 	push	r14

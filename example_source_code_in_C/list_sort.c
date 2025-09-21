@@ -6,7 +6,7 @@ typedef struct      s_list {
     struct s_list   *next;
 }                   t_list;
 
-void	ft_list_sort(t_list **begin_list, int (*cmp)())
+void	list_sort(t_list **begin_list, int (*cmp)())
 {
     t_list	*i;
     t_list	*j;

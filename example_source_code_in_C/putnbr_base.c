@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_putnbr_base.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lbrusa <lbrusa@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/04 12:36:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2025/09/19 14:55:29 by lbrusa           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include <unistd.h>
 // #include <stdio.h>
@@ -42,7 +31,7 @@ void	reverse(char *res, int len)
 // does get the length of the base as needed for the
 // next calcs and checks if the base contains + or - chars
 // and double chars - also returns 0 if the base len is 0 or 1
-int	ft_check_base_len(char *base)
+int	check_base_len(char *base)
 {
 	int		i;
 	int		j;
@@ -70,7 +59,7 @@ int	ft_check_base_len(char *base)
 // to positive keeing track of the sign
 int	get_num_and_base(int *nbr, char *overfl_remainder, char *base, int *len)
 {
-	*len = ft_check_base_len(base);
+	*len = check_base_len(base);
 	if (!(*len))
 		return (0);
 	if (*nbr < 0 && *nbr != -2147483647 - 1)
@@ -86,7 +75,7 @@ int	get_num_and_base(int *nbr, char *overfl_remainder, char *base, int *len)
 
 // printf("checking nbr %d, &overfl_remainder %c, base %s,
 // &len %d\n", nbr, overfl_remainder, base, len);
-void	ft_putnbr_base(int nbr, char *base)
+void	putnbr_base(int nbr, char *base)
 {
 	int		i;
 	int		sign;
@@ -118,7 +107,7 @@ void	ft_putnbr_base(int nbr, char *base)
 //  #define INT_MIN (-2147483647 - 1)
 // int	main()
 // {
-// 	ft_putnbr_base(INT_MIN, "01");
+// 	putnbr_base(INT_MIN, "01");
 // 	return (0);
 // }
 // // -10000000000000000000000000000000%

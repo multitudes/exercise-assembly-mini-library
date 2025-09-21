@@ -8,7 +8,7 @@ typedef struct      s_list {
 }                   t_list;
 
 
-void	ft_list_push_front(t_list **begin_list, void *data)
+void	list_push_front(t_list **begin_list, void *data)
 {
 	t_list *new_node;
 	if (!begin_list)
@@ -22,8 +22,24 @@ void	ft_list_push_front(t_list **begin_list, void *data)
 	*begin_list = new_node;
 }
 
-
-void    ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *))
+/**
+ * list_remove_if - Remove nodes from a linked list that match a condition.
+ *
+ * Arguments:
+ *   begin_list: The address of a pointer to the first link of a list.
+ *   data_ref: The reference data to compare against each node's data.
+ *   cmp: Function pointer for comparison logic (returns 0 for match).
+ *   free_fct: Function pointer to free the data stored in matching nodes.
+ *
+ * Returns:
+ *   None.
+ *
+ * Description:
+ *   Removes all nodes whose data matches data_ref according to cmp.
+ *   Frees node data using free_fct and frees the node itself.
+ *   Updates the head pointer if the first node(s) are removed.
+ */
+void    list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *))
 {
     t_list *current;
     t_list *temp;
@@ -69,11 +85,11 @@ int main()
     void *data3 = "Node 3";
     void *data4 = "Node 4";
     void *data5 = "Node 2";
-    ft_list_push_front(&list, data5);
-    ft_list_push_front(&list, data4);
-    ft_list_push_front(&list, data3);
-    ft_list_push_front(&list, data2);
-    ft_list_push_front(&list, data1);   
+    list_push_front(&list, data5);
+    list_push_front(&list, data4);
+    list_push_front(&list, data3);
+    list_push_front(&list, data2);
+    list_push_front(&list, data1);   
 
     t_list *current = list;
     while (current) {
@@ -82,7 +98,7 @@ int main()
     }
     printf("----- FT_LIST_REMOVE_IF -----\n");
     // void (*free_fct)(void *) = free;
-    ft_list_remove_if(&list, "Node 2", (int (*)())cmp, no_free);
+    list_remove_if(&list, "Node 2", (int (*)())cmp, no_free);
     current = list;
     printf("After removing 'Node 2':\n");
     while (current) {
@@ -96,4 +112,4 @@ int main()
         free(temp);
     }
     return (0);
-} 
+}

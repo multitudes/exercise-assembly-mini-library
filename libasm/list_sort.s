@@ -1,7 +1,7 @@
 section	.text
 
-global	ft_list_sort
-ft_list_sort:
+global	list_sort
+list_sort:
 	push	r15
 	push	r14
 	push	r12

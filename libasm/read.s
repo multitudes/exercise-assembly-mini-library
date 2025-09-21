@@ -1,23 +1,24 @@
 section	.text
-global	ft_write  
+global	read  
 
-; ft_write(int rdi, void *rsi, size_t rdx)
+extern __errno_location
+
+; read(int rdi, void *rsi, size_t rdx)
 ; ------------------------------------------
-; Behaves like the C write() function.
+; Behaves like the C read() function.
 ; Arguments are passed via registers by the caller.
-; the args for write are already in the right registers:
-;   rdi: file descriptor to write to
-;   rsi: pointer to buffer where data to write is stored
-;   rdx: number of bytes to write
-; returns: number of bytes written (in rax) or -1 on error
+; the args for read are already in the right registers:
+;   rdi: file descriptor to read from
+;   rsi: pointer to buffer where read data will be stored
+;   rdx: number of bytes to read
+; returns: number of bytes read (in rax) or -1 on error
 
 ; To link with C library functions like __errno_location in a PIE binary,
 ; we must declare them as external and specify that the call will be routed
 ; through the Procedure Linkage Table (PLT).
-extern __errno_location
 
-ft_write:               
-	mov	rax, 1                  ; syscall number for write
+read:               
+	mov	rax, 0                  ; syscall number for read
 	syscall
     cmp rax, 0                  ; check return value
     jge .ret                    ; if rax >= 0, return it    

@@ -14,53 +14,53 @@ void free_fct(void *ptr) {
 }
 
 int main() {
-    printf("----- FT_PUTNBR_BASE -----\n");
-    printf("Testing ft_putnbr_base with -2147483648:\n");
-    ft_putnbr_base(-2147483648, "0123456789ABCDEF");
+    printf("----- MY_PUTNBR_BASE -----\n");
+    printf("Testing putnbr_base with -2147483648:\n");
+    putnbr_base(-2147483648, "0123456789ABCDEF");
     printf("\n");
-    printf("Testing ft_putnbr_base with 42:\n"); 
-    ft_putnbr_base(42, "0123456789");
+    printf("Testing putnbr_base with 42:\n"); 
+    putnbr_base(42, "0123456789");
     printf("\n");
-    printf("Testing ft_putnbr_base with -42:\n");
-    ft_putnbr_base(-42, "0123456789");
+    printf("Testing putnbr_base with -42:\n");
+    putnbr_base(-42, "0123456789");
     printf("\n");
-    printf("Testing ft_putnbr_base with 255:\n");
-    ft_putnbr_base(255, "01");
+    printf("Testing putnbr_base with 255:\n");
+    putnbr_base(255, "01");
     printf("\n");
-    printf("Testing ft_putnbr_base with 100:\n");
-    ft_putnbr_base(100, "poneyvif");
+    printf("Testing putnbr_base with 100:\n");
+    putnbr_base(100, "poneyvif");
     printf("\n");
 
-    printf("----- FT_LIST_PUSH_FRONT -----\n");
+    printf("----- MY_LIST_PUSH_FRONT -----\n");
     t_list *list = NULL;
-    ft_list_push_front(&list, "Node FAIL");
+    list_push_front(&list, "Node FAIL");
     *list = (t_list){ .data = "Node start", .next = NULL };
-    ft_list_push_front(&list, "Node 1");
-    ft_list_push_front(&list, "Node 2");
-    ft_list_push_front(&list, "Node 3");
+    list_push_front(&list, "Node 1");
+    list_push_front(&list, "Node 2");
+    list_push_front(&list, "Node 3");
     t_list *current = list;
     while (current) {
         printf("Node data: %s\n", (char *)current->data);
         current = current->next;
     } 
-    printf("----- FT_LIST_SIZE -----\n");
-    int size = ft_list_size(list);
+    printf("----- MY_LIST_SIZE -----\n");
+    int size = list_size(list);
     printf("List size: %d\n", size);
-    size = ft_list_size(NULL);
+    size = list_size(NULL);
     printf("Size of NULL list: %d\n", size);
 
-    printf("----- FT_LIST_SORT -----\n");
+    printf("----- MY_LIST_SORT -----\n");
     int (*cmp)(const char *, const char *) = (int (*)(const char *, const char *))strcmp;
-    ft_list_sort(&list, (int (*)())cmp);
+    list_sort(&list, (int (*)())cmp);
     current = list;
     while (current) {
         printf("Node data: %s\n", (char *)current->data);
         current = current->next;
     }
 
-    printf("----- FT_LIST_REMOVE_IF -----\n");
+    printf("----- MY_LIST_REMOVE_IF -----\n");
     // void (*free_fct)(void *) = free;
-    ft_list_remove_if(&list, "Node 2", (int (*)())cmp, free_fct);
+    list_remove_if(&list, "Node 2", (int (*)())cmp, free_fct);
     current = list;
     printf("After removing 'Node 2':\n");
     while (current) {

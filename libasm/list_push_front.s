@@ -1,9 +1,9 @@
 section	.text
-global	ft_list_push_front
+global	list_push_front
 
 extern malloc
 
-; ft_list_push_front(t_list **begin_list, void *data)
+; list_push_front(t_list **begin_list, void *data)
 ; ------------------------------------------
 ; Adds a new element at the beginning of the list.
 ; Arguments are passed via registers by the caller:
@@ -14,7 +14,7 @@ extern malloc
 ; our function must preserve their values if you use them
 ; 
 
-ft_list_push_front:
+list_push_front:
 	test	rdi, rdi			; null pointer check for begin_list
 	je		.ret				; if null, just return
 	push	rbp					; save callee-saved registers

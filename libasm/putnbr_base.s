@@ -1,31 +1,33 @@
 section .text
-global	reverse
-global ft_check_base_len 
-global get_num_and_base
-global ft_putnbr_base
+global putnbr_base
 
 extern write
 
+; reverse
+; ------------------------------------------
+; Reverses a string in place.
+; Arguments:
+;   rdi: pointer to the start of the string
+;   rsi: length of the string (excluding null terminator)
+; Returns: nothing 
 reverse:
-.LFB12:
-	endbr64
-	sub	esi, 1
-	mov	ecx, 0
-	jmp	.L2
-.L3:
-	movsx	rdx, ecx
-	add	rdx, rdi
-	movzx	r8d, byte [rdx]
-	movsx	rax, esi
-	add	rax, rdi
-	add	ecx, 1
-	movzx	r9d, byte  [rax]
-	mov	byte  [rdx], r9b
-	sub	esi, 1
-	mov	byte  [rax], r8b
-.L2:
-	cmp	esi, ecx
-	jg	.L3
+	sub	esi, 1					; len - 1
+	mov	ecx, 0					; left index = 0
+	jmp	.condition
+.loop:
+	movsx	rdx, ecx				; just sign extend the pointer left index
+	add	rdx, rdi					; rdx = string + left index		
+	movzx	r8d, byte [rdx]			; load left char	
+	movsx	rax, esi				; right index - address calculation needs 64-bit
+	add	rax, rdi					; calculate address of right index
+	add	ecx, 1						; left index++
+	movzx	r9d, byte  [rax]		; load right char
+	mov	byte  [rdx], r9b			; store right char at left index
+	sub	esi, 1						; right index--
+	mov	byte  [rax], r8b			; store left char at right index
+.condition:
+	cmp	esi, ecx					; compare right index with left index
+	jg	.loop						; if right > left, continue 
 	ret
 
 
@@ -33,9 +35,7 @@ reverse:
 
 
 
-ft_check_base_len:
-.LFB13:
-	endbr64
+check_base_len:
 	mov	ecx, 0
 .L5:
 	movsx	rax, ecx
@@ -79,8 +79,6 @@ ft_check_base_len:
 
 
 get_num_and_base:
-.LFB14:
-	endbr64
 	push	r13
 	push	r12
 	push	rbp
@@ -90,7 +88,7 @@ get_num_and_base:
 	mov	r12, rdx
 	mov	rbp, rcx
 	mov	rdi, rdx
-	call	ft_check_base_len
+	call	check_base_len
 	mov	dword 0[rbp], eax
 	test	eax, eax
 	je	.L15
@@ -114,13 +112,12 @@ get_num_and_base:
 
 	ret
 .L20:
-
 	cdq
 	idiv	dword  0[rbp]
 	neg	edx
 	movsx	rdx, edx
 	movzx	eax, byte  [r12+rdx]
-	mov	BYTE  0[r13], al
+	mov	byte  0[r13], al
 	mov	eax, dword  [rbx]
 	cdq
 	idiv	dword  0[rbp]
@@ -134,18 +131,16 @@ get_num_and_base:
 
 
 
-ft_putnbr_base:
-.LFB15:
-	endbr64
+putnbr_base:
 	push	r12
 	push	rbp
 	push	rbx
 	sub	rsp, 80
-	mov	DWORD 12[rsp], edi
+	mov	dword 12[rsp], edi
 	mov	rbp, rsi
 	xor	eax, eax
 	mov	r12d, edi
-	mov	BYTE  27[rsp], 0
+	mov	byte  27[rsp], 0
 	lea	rcx, 28[rsp]
 	lea	rsi, 27[rsp]
 	lea	rdi, 12[rsp]
@@ -153,9 +148,9 @@ ft_putnbr_base:
 	call	get_num_and_base
 	test	eax, eax
 	je	.L21
-	cmp	DWORD  12[rsp], 0
+	cmp	dword  12[rsp], 0
 	jne	.L28
-	mov	BYTE  32[rsp], 48
+	mov	byte  32[rsp], 48
 	mov	ebx, 1
 	jmp	.L24
 .L28:
@@ -163,7 +158,7 @@ ft_putnbr_base:
 	jmp	.L24
 .L25:
 	cdq
-	idiv	DWORD  28[rsp]
+	idiv	dword  28[rsp]
 	movsx	rdx, edx
 	movzx	ecx, byte  0[rbp+rdx]
 	movsx	rdx, ebx
@@ -171,7 +166,7 @@ ft_putnbr_base:
 	mov	dword 12[rsp], eax
 	lea	ebx, 1[rbx]
 .L24:
-	mov	eax, DWORD  12[rsp]
+	mov	eax, dword  12[rsp]
 	test	eax, eax
 	jg	.L25
 	test	r12d, r12d
@@ -184,8 +179,8 @@ ft_putnbr_base:
 	movsx	rdx, ebx
 	mov	rsi, rbp
 	mov	edi, 1
-	call	write wrt ..plt
-	cmp	BYTE  27[rsp], 0
+	call	write
+	cmp	byte  27[rsp], 0
 	jne	.L31
 .L21:
 	add	rsp, 80
@@ -195,14 +190,14 @@ ft_putnbr_base:
 	ret
 .L30:
 	movsx	rax, ebx
-	mov	BYTE  32[rsp+rax], 45
+	mov	byte  32[rsp+rax], 45
 	lea	ebx, 1[rbx]
 	jmp	.L26
 .L31:
 	lea	rsi, 27[rsp]
 	mov	edx, 1
 	mov	edi, 1
-	call	write wrt ..plt
+	call	write
 	jmp	.L21
 
 

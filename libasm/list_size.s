@@ -1,7 +1,7 @@
 section	.text
-global	ft_list_size 
+global	list_size 
 
-; ft_list_size(t_list *lst)
+; list_size(t_list *lst)
 ; ------------------------------------------
 ; Counts the number of elements in a linked list.
 ; Arguments are passed via registers by the caller:
@@ -10,7 +10,7 @@ global	ft_list_size
 ; NB rdi is a caller-saved register in the x86-64 family
 ; this is equivalent in C to pass by value
 
-ft_list_size:                           
+list_size:                           
 	xor		eax, eax				; Initialize counter and return rax reg to 0
 	test	rdi, rdi				; Check if lst is NULL and return if so
 	je		.end

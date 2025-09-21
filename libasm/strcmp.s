@@ -1,7 +1,7 @@
 section	.text
-global	ft_strcmp            
+global	strcmp            
 
-; ft_strcmp(const char *s1, const char *s2)
+; strcmp(const char *s1, const char *s2)
 ; ------------------------------------------
 ; Compares the two strings s1 and s2.	
 ; Arguments are passed via registers by the caller:
@@ -10,7 +10,7 @@ global	ft_strcmp
 ; Returns: an integer less than, equal to, or greater than zero if s1 is
 ; respectively found to be less than, to match, or be greater than s2.
 
-ft_strcmp:
+strcmp:
 
 ; Initialize rax to 0, which will hold the return value.
 	xor	eax, eax

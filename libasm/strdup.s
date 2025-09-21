@@ -1,9 +1,9 @@
 section .text
-global	ft_strdup                       
+global	strdup                       
 extern malloc 
 
 
-; char *ft_strdup(const char *s);
+; char *strdup(const char *s);
 ; ------------------------------------------
 ; Duplicates the string s by allocating sufficient memory for a copy of s,
 ; copying the string, and returning a pointer to it.
@@ -11,7 +11,7 @@ extern malloc
 ;   rdi: pointer to the source string (s)
 ; Returns: pointer to the duplicated string (or NULL if insufficient memory)
 
-ft_strdup:                              
+strdup:                              
 ; push the register on the stack, r15, r14 and rbx are callee saved registers
 ; their value will be later reinstated before returning.
 	push	r15 
