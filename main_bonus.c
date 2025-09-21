@@ -1,8 +1,17 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 #include "libasm/libasm_bonus.h"
 
+/**
+ * If I pass strings as data which have not malloqued then i pass a no op free function
+ * If I pass malloced strings then I pass free as free function
+*/
+void free_fct(void *ptr) {
+    // Do nothing - string literals don't need freeing
+    (void)ptr;
+}
 
 int main() {
     printf("----- FT_PUTNBR_BASE -----\n");
@@ -47,6 +56,22 @@ int main() {
     while (current) {
         printf("Node data: %s\n", (char *)current->data);
         current = current->next;
+    }
+
+    printf("----- FT_LIST_REMOVE_IF -----\n");
+    // void (*free_fct)(void *) = free;
+    ft_list_remove_if(&list, "Node 2", (int (*)())cmp, free_fct);
+    current = list;
+    printf("After removing 'Node 2':\n");
+    while (current) {
+        printf("Node data: %s\n", (char *)current->data);
+        current = current->next;
+    }
+    // Free remaining nodes
+    while (list) {
+        t_list *temp = list;
+        list = list->next;
+        free(temp);
     }
     return 0;
 }

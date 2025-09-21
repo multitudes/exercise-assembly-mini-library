@@ -1,10 +1,27 @@
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
-
-typedef struct     s_list
-{
-    struct s_list   *next;
+typedef struct      s_list {
     void            *data;
+    struct s_list   *next;
 }                   t_list;
+
+
+void	ft_list_push_front(t_list **begin_list, void *data)
+{
+	t_list *new_node;
+	if (!begin_list)
+		return;
+
+	new_node = (t_list *)malloc(sizeof(t_list));
+	if (!new_node)
+		return;
+	new_node->data = data;
+	new_node->next = *begin_list;
+	*begin_list = new_node;
+}
+
 
 void    ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *))
 {
@@ -30,8 +47,53 @@ void    ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), voi
         } else {
             prev = current;
             current = current->next;
-
         }
     }
 
 }
+
+int cmp(void *a, void *b) {
+    return (strcmp((char *)a, (char *)b));
+}
+
+void no_free(void *ptr) {
+    // Do nothing - string literals don't need freeing
+    (void)ptr;
+}
+// test code
+int main()
+{
+    t_list *list = NULL;
+    void *data1 = "Node 1";
+    void *data2 = "Node 2";
+    void *data3 = "Node 3";
+    void *data4 = "Node 4";
+    void *data5 = "Node 2";
+    ft_list_push_front(&list, data5);
+    ft_list_push_front(&list, data4);
+    ft_list_push_front(&list, data3);
+    ft_list_push_front(&list, data2);
+    ft_list_push_front(&list, data1);   
+
+    t_list *current = list;
+    while (current) {
+        printf("Node data: %s\n", (char *)current->data);
+        current = current->next;
+    }
+    printf("----- FT_LIST_REMOVE_IF -----\n");
+    // void (*free_fct)(void *) = free;
+    ft_list_remove_if(&list, "Node 2", (int (*)())cmp, no_free);
+    current = list;
+    printf("After removing 'Node 2':\n");
+    while (current) {
+        printf("Node data: %s\n", (char *)current->data);
+        current = current->next;
+    }
+    // Free remaining nodes
+    while (list) {
+        t_list *temp = list;
+        list = list->next;
+        free(temp);
+    }
+    return (0);
+} 

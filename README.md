@@ -409,3 +409,55 @@ and rax, 0xfff                ; Keep only offset within page
 The "hacker significance" comes from `0xfff` being a **natural boundary** in computer systems - it's where pages, permissions, and memory layouts often align, making it a critical value for understanding and exploiting system behavior!
 
 In your assembly functions, you might use similar patterns for memory alignment, bounds checking, or when interfacing with system calls that expect page-aligned addresses.
+
+## the last function - the remove_ifs
+
+It is a bit of a headache to understand at first. the compiled assembly from clang and adjusted for nasm gives
+```
+	lea	rax, [rbp + 8]				; rax = address of prev->next assuming prev is not null
+	test	rbp, rbp				; test if prev is NULL
+	cmove	rax, r12				; conditional move if rbp is zero - NULL then rax = r12 (address of *begin_list)
+									
+	mov	rcx, qword [rbx + 8]		; rcx = current->next (offset 8)
+	mov	qword  [rax], rcx	
+```
+which correcpond to the c code:
+```
+ if (prev)
+	prev->next = current->next;
+else 
+	*begin_list = current->next; 
+```
+this means before removing the node i check if i had a previous node , if not this node i want to remove is the head of the list.
+In assembly this is cleverly done. First I put the value of the pointer to the next node in my rax register as prev->next. but if prev is null(0) this will have actually a garbage value. cleverly there is a conditional move later to update it if the prev is null. and the rax will have the correct pointer value. I update the node this pointer points to then with the next node...
+
+
+### **Case 1: `rbp != NULL` (removing middle/end node)**
+```nasm
+lea	rax, [rbp + 8]      ; rax = address of prev->next
+test	rbp, rbp           ; rbp is NOT NULL
+cmove	rax, r12           ; This does NOT execute (condition false)
+; rax still contains &(prev->next)
+mov	qword [rax], rcx   ; prev->next = current->next
+```
+
+### **Case 2: `rbp == NULL` (removing first node)**
+```nasm
+lea	rax, [rbp + 8]      ; rax = 0 + 8 = 8 (garbage address)
+test	rbp, rbp           ; rbp IS NULL (zero flag set)
+cmove	rax, r12           ; This DOES execute! rax = r12 = &(*begin_list)
+; rax now contains address of begin_list
+mov	qword [rax], rcx   ; *begin_list = current->next
+```
+
+## **The Cleverness:**
+
+- **When `rbp != NULL`:** `rax` keeps the correct address from `lea`
+- **When `rbp == NULL`:** `rax` gets **overwritten** with the correct address (`r12`)
+
+The initial `lea` result (8) when `rbp` is NULL is indeed **garbage**, but it gets immediately replaced by `cmove` with the proper address.
+
+
+1. `lea` safely calculates an address without dereferencing (no segfault)
+2. `cmove` conditionally overwrites the garbage with the correct value
+3. Both paths end up with `rax` containing the right address to update
