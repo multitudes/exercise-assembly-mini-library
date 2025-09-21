@@ -73,22 +73,11 @@ Other programming tools, including those from Microsoft as well as the documenta
 ```bash
 gcc -Og -S -masm=intel mstore.c
 ```
-This gives the following assembly code:
-```
-multstore:
-	push rbx
-	mov rbx, rdx
-	call mult2
-	mov QWORD PTR [rbx], rax
-	pop rbx
-	ret
-```
-
-The Intel and ATT formats differ in the following ways:
-- The Intel code omits the size designation suffixes. We see instruction push and mov instead of pushq and movq.
-- The Intel code omits the ‘%’ character in front of register names, using rbx instead of %rbx.
-- The Intel code has a different way of describing locations in memory—for example, QWORD PTR [rbx] rather than (%rbx).
-- Instructions with multiple operands list them in the reverse order. This can be very confusing when switching between the two formats.
+> The Intel and ATT formats differ in the following ways:
+>- The Intel code omits the size designation suffixes. We see instruction push and mov instead of pushq and movq.
+>- The Intel code omits the ‘%’ character in front of register names, using rbx instead of %rbx.
+>- The Intel code has a different way of describing locations in memory—for example, QWORD PTR [rbx] rather than (%rbx).
+>- Instructions with multiple operands list them in the reverse order. This can be very confusing when switching between the two formats.
 
 
 ## Starting with strlen
