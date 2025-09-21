@@ -1,24 +1,56 @@
-# libasm-42
+# Learning some assembly code
 
-## the library
+## creating a static library
+Yes, absolutely! You are creating a **static library**.
 
-The library must be called libasm.a.
+## **What makes it a static library:**
 
-You must rewrite the following functions in assembly:
+1. **File extension**: `.a` (archive)
+2. **Creation method**: Using `ar` (archiver) command
+3. **Linking behavior**: Code is copied into the final executable at compile time
+
+```makefile
+$(NAME): $(OBJS)
+	ar rcs $@ $^
+```
+
+The `ar rcs` command:
+- `ar` = archiver tool
+- `r` = insert files into archive
+- `c` = create archive if it doesn't exist
+- `s` = write an index (equivalent to running `ranlib`)
+
+## **Static vs Dynamic Libraries:**
+
+**Static Library (`.a`):**
+- Code is **embedded** into your executable at link time
+- Larger executable size
+- No external dependencies at runtime
+- Your `libasm.a` is this type
+
+**Dynamic Library (`.so` on Linux, `.dll` on Windows):**
+- Code remains separate, loaded at runtime
+- Smaller executable size
+- Requires the library to be present on the target system
+
+## **Your linking process:**
+```bash
+gcc main.c -Llibasm -lasm -o test_strlen
+```
+- `-L` specifies library search path
+- `-l` links with `libasm.a` (static linking)
+- The object code from your assembly functions gets copied into the final `test_strlen` executable
+
+**Summary:** Yes, `libasm.a` is definitely a static library, and that's the standard approach for this type of project where you want a self-contained executable with your custom assembly implementations.
+
+I will rewrite the following C functions in assembly:
 ◦ ft_strlen (man 3 strlen)
 ◦ ft_strcpy (man 3 strcpy)
 ◦ ft_strcmp (man 3 strcmp)
 ◦ ft_write (man 2 write)
 ◦ ft_read (man 2 read)
-◦ ft_strdup (man 3 strdup, you can call to malloc)
+◦ ft_strdup (man 3 strdup, I will call malloc)
 
-You must check for errors during syscalls and handle them properly when needed.
-• Your code must set the variable errno properly.
-• For that, you are allowed to call the extern ___error or errno_location
-
-## Bonus part
-You can rewrite these functions in assembly. The linked list functions will use the follow-
-ing structure:
 ```
 typedef struct s_list
 {
@@ -33,19 +65,21 @@ struct s_list *next;
 • ft_list_sort (see Annex V.4)
 • ft_list_remove_if (see Annex V.5)
 
-## why the no pie?
-The compilation flag -no-pie disables Position Independent Executable (PIE) generation. By default, modern compilers produce PIE binaries, which can be loaded at random memory addresses for security (ASLR).
+I will check for errors during syscalls and handle them properly when needed.
+My code will set the variable errno properly.
+I will call the extern ___error or errno_location
 
-If you use -no-pie, the binary is not position-independent, meaning its code and data are loaded at fixed addresses. This can make certain assembly code easier to write, especially when using absolute addresses, but it reduces security and is not allowed in many coding standards (like 42's libasm) to ensure your code works with modern, secure practices.
+## what is the --no-pie flag?
+The compilation flag --no-pie disables Position Independent Executable (PIE) generation. By default, modern compilers produce PIE binaries, which can be loaded at random memory addresses for security (ASLR).
+
+If you use -no-pie, the binary is not position-independent, meaning its code and data are loaded at fixed addresses. This can make certain assembly code easier to write, especially when using absolute addresses, but it reduces security and is not allowed in many coding standards.
 
 ## The compilation
-Aside
+
 ATT versus Intel assembly-code formats
-In our presentation, we show assembly code in ATT format (named after AT&T, the company that
-operated Bell Laboratories for many years), the default format for gcc, objdump, and the other tools we
-will consider. Other programming tools, including those from Microsoft as well as the documentation
-from Intel, show assembly code in Intel format. The two formats differ in a number of ways. As an
-example, gcc can generate code in Intel format for the sum function using the following command line:
+In the book "systems: a programmers perspective"
+> In our presentation, we show assembly code in ATT format (named after AT&T, the company that
+operated Bell Laboratories for many years), the default format for gcc, objdump, and the other tools we will consider. Other programming tools, including those from Microsoft as well as the documentation from Intel, show assembly code in Intel format. The two formats differ in a number of ways. As an example, gcc can generate code in Intel format for the sum function using the following command line:
 linux> gcc -Og -S -masm=intel mstore.c
 This gives the following assembly code:
 ```
@@ -64,7 +98,9 @@ We see that the Intel and ATT formats differ in the following ways:
 - Instructions with multiple operands list them in the reverse order. This can be very confusing when switching between the two formats.
 Although we will not be using Intel format in our presentation, you will encounter it in documentation from Intel and Microsoft.
 
-my first function:
+## starting with strlen
+
+my first function in C it would be written like:
 ```
 #include <stddef.h>
 
@@ -76,13 +112,15 @@ size_t ft_strlen(const char *s) {
     return len;
 }
 ```
+Yes I know there is no cheeck for the NULL pointer for s exactly like the original strlen this will fail miserably with the wrong input!
 
-compiling with 
+compiling with:
 ```
 gcc -Og -S ft_strlen.c
 ```
+The Og option here it sto disable compiler optimisations
 
-I get the ATT style
+With the above, I get the ATT style
 ```
 	.file	"ft_strlen.c"
 	.text
@@ -125,8 +163,8 @@ ft_strlen:
 	.align 8
 4:
 ```
-but most of it is metadata so I can just keep the essential.
-so this would give me the assembly representation (ATT style)
+but most of it is metadata (the lines starting with the dot) so I can remove them and just keep the essential to better understand what the assembly does.
+this would give me the assembly representation (ATT style)
 
 ```
     .text          # Specifies this is the executable code section
@@ -147,6 +185,62 @@ ft_strlen:
 .L1:
 	ret
 ```
+
+## The Intel style and nasm
+I get the code, but this is ATT style. To get it into intel and nasm compatible style I use these options:
+```
+cc -Og -S -masm=intel  ft_strlen.c
+```
+
+Lets see how it looks like now, this is the minimum required:
+```
+	.intel_syntax noprefix
+	.text
+	.globl	ft_strlen
+ft_strlen:
+	xor	eax, eax
+	jmp	.L2
+.L1:
+	add	rax, 1
+.L2:
+	cmp	BYTE PTR [rdi+rax], 0
+	jne	.L1
+    ret
+```
+
+but this is not the end because if I want to use nasm the code will be different again even if it is in the same intel family. This is the minimal code required for strlen which will compile with nasm:
+```
+section .text
+global ft_strlen
+
+ft_strlen:
+    xor rax, rax            ; Initialize counter 'rax' to 0
+
+.loop:
+    cmp byte [rdi + rax], 0 ; Compare the character at s[rax] with the null terminator
+    je .end                 ; If it's the end of the string, jump to .end
+    inc rax                 ; Otherwise, increment the counter
+    jmp .loop               ; Repeat the loop
+
+.end:
+    ret                     ; Return the count in 'rax'
+```
+NB:  
+I dont handle the case if str is NULL because not handled in the orig strlen().
+
+## NASM
+NASM (Netwide Assembler) is a standalone assembler for x86 and x86-64 architectures. It uses Intel syntax and is designed for writing low-level assembly code directly.
+
+GCC (GNU Compiler Collection) is a C/C++ compiler that can also assemble code, but it uses the GNU assembler (GAS), which defaults to AT&T syntax and supports different directives and conventions.
+
+**Key differences:**
+- nasm (e.g., `mov bl, [rdi + rax]`), while GCC/GAS uses AT&T syntax (e.g., `movb (%rdi,%rax), %bl`).
+- NASM requires explicit section and global declarations (`section .text`, `global`).
+- GCC can compile C and link with assembly, but expects GAS/AT&T syntax in `.s` files by default.
+- NASM is more strict and minimal, while GCC/GAS supports more high-level features and debugging info.
+
+
+## linking
 to compile into an object in machine code AT&T style
 ```
 gcc -Og -S ft_strlen.c 
@@ -168,63 +262,18 @@ using
 gcc main.c ft_strlen.o -o test_strlen
 ```
 
-I get the code working. But this is ATT style. To get it into nasm style I use 
+I get the code working. But this is ATT style. To get it into nasm style I use `-masm=intel` option with clang or gcc
 ```
-cc -Og -S -masm=intel  ft_strlen.c
-```
-
-Lets see how it looks like with the intel style, this is the minimum required:
-```
-	.intel_syntax noprefix
-	.text
-	.globl	ft_strlen
-ft_strlen:
-	xor	eax, eax
-	jmp	.L2
-.L1:
-	add	rax, 1
-.L2:
-	cmp	BYTE PTR [rdi+rax], 0
-	jne	.L1
-    ret
+gcc -Og -S -masm=intel  ft_strlen.c
 ```
 
-but this is not the end because the subject wants to use nasm so the code will be different again even if it is in the same intel family. This is the minimal code required for strlen:
+to link and test i use now:
 ```
-section .text
-global ft_strlen
-
-ft_strlen:
-    xor rax, rax            ; Initialize counter 'rax' to 0
-
-.loop:
-    cmp byte [rdi + rax], 0 ; Compare the character at s[rax] with the null terminator
-    je .end                 ; If it's the end of the string, jump to .end
-    inc rax                 ; Otherwise, increment the counter
-    jmp .loop               ; Repeat the loop
-
-.end:
-    ret                     ; Return the count in 'rax'
-```
-NB:  
-I dont handle the case if str is NULL because not handled in the orig strlen().
-
-
-NASM (Netwide Assembler) is a standalone assembler for x86 and x86-64 architectures. It uses Intel syntax and is designed for writing low-level assembly code directly.
-
-GCC (GNU Compiler Collection) is a C/C++ compiler that can also assemble code, but it uses the GNU assembler (GAS), which defaults to AT&T syntax and supports different directives and conventions.
-
-**Key differences:**
-- NASM uses Intel syntax (e.g., `mov bl, [rdi + rax]`), while GCC/GAS uses AT&T syntax (e.g., `movb (%rdi,%rax), %bl`).
-- NASM requires explicit section and global declarations (`section .text`, `global`).
-- GCC can compile C and link with assembly, but expects GAS/AT&T syntax in `.s` files by default.
-- NASM is more strict and minimal, while GCC/GAS supports more high-level features and debugging info.
-
-to compile i use now:
-```
+# create the object file in machine code
 nasm -f elf64 ft_strlen.s -o ft_strlen.o
-# using gcc to compile
-cc main.c ft_strlen.o -o test_strlen 
+# using gcc to compile the main and link the objeck file
+gcc main.c ft_strlen.o -o test_strlen 
+# run
 ./test_strlen 
 ```
 
@@ -234,7 +283,7 @@ This is a big one. It would be easy to declare the
 ```
 extern __errno_location
 ```
-in our code and then use the --no-pie flag to call the function directly but we are not allowed to use the flag. why? because the PIE is better.
+in our code and then use the --no-pie flag to call the function directly but we are not going to use the flag. why? because the PIE is better.
 PIE-compatible code is considered much safer.
 
 Here’s a breakdown of why:
@@ -280,10 +329,7 @@ Here's a slightly more detailed breakdown of why this is necessary:
 
     The PLT's Job: The PLT (Procedure Linkage Table) acts as a middleman. Your call instruction doesn't jump directly to the final address (which it can't know). Instead, it jumps to a small stub of code in the PLT. This stub's job is to look up the current, real-time address of __errno_location and then jump to it.
 
-
-	## about moving bytes
-	Yes, that's correct!
-
+## loading 1 byte vs 8 bytes
 - `mov cl, [r15]` loads 1 byte (8 bits) into the lower part of `rcx`.
 - `mov rcx, [r15]` loads 8 bytes (64 bits) from memory into the entire `rcx` register.
 
@@ -295,7 +341,7 @@ So, the size of the move depends on the register you use:
 
 
 ## reading the data from a pointer
-Yes, there are different size specifiers in NASM for different data sizes:
+
 
 **NASM size specifiers:**
 - `byte [addr]` = 8 bits (1 byte)
