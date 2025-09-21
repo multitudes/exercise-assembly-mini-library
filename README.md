@@ -6,6 +6,8 @@ Note: I am compiling with `gcc`, but `clang` works just as well. In fact, I swit
 ## Creating a Static Library
 
 I am building a **static library** (`.a` archive) using the `ar` (archiver) command. This library contains my assembly implementations and is linked into my executable at compile time.
+All x86-64 assembly code is written in Intel syntax, specifically for the `nasm` assembler.
+
 
 **Static Library (`.a`):**
 
@@ -31,12 +33,12 @@ The `ar rcs` command:
 - `s` = write an index (equivalent to running `ranlib`)
 
 I will rewrite the following C functions in assembly:
-◦ strlen (man 3 strlen)
-◦ strcpy (man 3 strcpy)
-◦ strcmp (man 3 strcmp)
-◦ write (man 2 write)
-◦ read (man 2 read)
-◦ strdup (man 3 strdup, I will call malloc)
+- strlen (man 3 strlen)
+- strcpy (man 3 strcpy)
+- strcmp (man 3 strcmp)
+- write (man 2 write)
+- read (man 2 read)
+- strdup (man 3 strdup, I will call malloc)
 
 ```c
 typedef struct s_list {
@@ -65,12 +67,12 @@ If you use `--no-pie`, the binary is not position-independent, meaning its code 
 
 ## ATT vs Intel Assembly Formats
 
-In the book "Systems: A Programmer's Perspective":
-In our presentation, we show assembly code in ATT format (named after AT&T, the company that operated Bell Laboratories for many years), the default format for gcc, objdump, and the other tools we will consider. Other programming tools, including those from Microsoft as well as the documentation from Intel, show assembly code in Intel format. The two formats differ in a number of ways. As an example, gcc can generate code in Intel format for the sum function using the following command line:
+In the book "Computer Systems: A Programmer's Perspective" they write:
+> In our presentation, we show assembly code in ATT format (named after AT&T, the company that operated Bell Laboratories for many years), the default format for gcc, objdump, and the other tools we will consider.  
+Other programming tools, including those from Microsoft as well as the documentation from Intel, show assembly code in Intel format. The two formats differ in a number of ways. As an example, gcc can generate code in Intel format for the sum function using the following command line:
 ```bash
 gcc -Og -S -masm=intel mstore.c
 ```
-
 This gives the following assembly code:
 ```
 multstore:
@@ -82,13 +84,12 @@ multstore:
 	ret
 ```
 
-We see that the Intel and ATT formats differ in the following ways:
+The Intel and ATT formats differ in the following ways:
 - The Intel code omits the size designation suffixes. We see instruction push and mov instead of pushq and movq.
 - The Intel code omits the ‘%’ character in front of register names, using rbx instead of %rbx.
 - The Intel code has a different way of describing locations in memory—for example, QWORD PTR [rbx] rather than (%rbx).
 - Instructions with multiple operands list them in the reverse order. This can be very confusing when switching between the two formats.
 
-Although we will not be using Intel format in our presentation, you will encounter it in documentation from Intel and Microsoft.
 
 ## Starting with strlen
 
@@ -714,3 +715,7 @@ mov qword [rax], rcx    ; *begin_list = current->next
 - When `rbp == NULL`, `cmove` overwrites `rax` with the correct address (`r12`).
 
 The initial `lea` result (8) when `rbp` is NULL is garbage, but it is immediately replaced by `cmove` with the proper value. This way, both cases end up with `rax` containing the right address to update, and I avoid any segfaults or undefined behavior.
+
+
+## Resources
+["Computer Systems: A Programmer's Perspective](https://csapp.cs.cmu.edu/)  
