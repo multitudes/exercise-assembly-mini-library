@@ -294,4 +294,4 @@ The initial `lea` result (8) when `rbp` is NULL is garbage, but it is immediatel
 
 
 ## Resources
-["Computer Systems: A Programmer's Perspective](https://csapp.cs.cmu.edu/)  
+[Computer Systems: A Programmer's Perspective - Carnegie Mellon](https://csapp.cs.cmu.edu/)  
