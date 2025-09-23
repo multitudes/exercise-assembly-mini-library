@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "libasm/libasm.h"
+#include "libasm.h"
 
 /**
  * If I pass strings as data which have not malloqued then i pass a no op free function
@@ -43,10 +43,10 @@ int main() {
     write(1, "\n", 1); 
     close(fd);
 
-    printf("----- MY_STRCPY -----\n");
+    printf("----- MY_my_strcpy -----\n");
     char *src = "Hello, World!";
     char dest[5];
-    strcpy(dest, src);
+    my_strcpy(dest, src);
     printf("Copied string: %s\n", dest);
 
     printf("----- MY_STRCMP -----\n");
@@ -78,22 +78,22 @@ int main() {
     // res = strdup(NULL);
     // printf("Duplicated NULL string: %s\n", res);
     // free(res);
-    printf("----- MY_PUTNBR_BASE -----\n");
-    printf("Testing putnbr_base with -2147483648:\n");
-    putnbr_base(-2147483648, "0123456789ABCDEF");
-    printf("\n");
-    printf("Testing putnbr_base with 42:\n"); 
-    putnbr_base(42, "0123456789");
-    printf("\n");
-    printf("Testing putnbr_base with -42:\n");
-    putnbr_base(-42, "0123456789");
-    printf("\n");
-    printf("Testing putnbr_base with 255:\n");
-    putnbr_base(255, "01");
-    printf("\n");
-    printf("Testing putnbr_base with 100:\n");
-    putnbr_base(100, "poneyvif");
-    printf("\n");
+    // printf("----- MY_PUTNBR_BASE -----\n");
+    // printf("Testing putnbr_base with -2147483648:\n");
+    // putnbr_base(-2147483648, "0123456789ABCDEF");
+    // printf("\n");
+    // printf("Testing putnbr_base with 42:\n"); 
+    // putnbr_base(42, "0123456789");
+    // printf("\n");
+    // printf("Testing putnbr_base with -42:\n");
+    // putnbr_base(-42, "0123456789");
+    // printf("\n");
+    // printf("Testing putnbr_base with 255:\n");
+    // putnbr_base(255, "01");
+    // printf("\n");
+    // printf("Testing putnbr_base with 100:\n");
+    // putnbr_base(100, "poneyvif");
+    // printf("\n");
 
     printf("----- MY_LIST_PUSH_FRONT -----\n");
     t_list *list = NULL;
@@ -113,30 +113,30 @@ int main() {
     size = list_size(NULL);
     printf("Size of NULL list: %d\n", size);
 
-    printf("----- MY_LIST_SORT -----\n");
-    int (*cmp)(const char *, const char *) = (int (*)(const char *, const char *))strcmp;
-    list_sort(&list, (int (*)())cmp);
-    current = list;
-    while (current) {
-        printf("Node data: %s\n", (char *)current->data);
-        current = current->next;
-    }
+    // printf("----- MY_LIST_SORT -----\n");
+    // int (*cmp)(const char *, const char *) = (int (*)(const char *, const char *))strcmp;
+    // list_sort(&list, (int (*)())cmp);
+    // current = list;
+    // while (current) {
+    //     printf("Node data: %s\n", (char *)current->data);
+    //     current = current->next;
+    // }
 
-    printf("----- MY_LIST_REMOVE_IF -----\n");
-    // void (*free_fct)(void *) = free;
-    list_remove_if(&list, "Node 2", (int (*)())cmp, free_fct);
-    current = list;
-    printf("After removing 'Node 2':\n");
-    while (current) {
-        printf("Node data: %s\n", (char *)current->data);
-        current = current->next;
-    }
-    // Free remaining nodes
-    while (list) {
-        t_list *temp = list;
-        list = list->next;
-        free(temp);
-    }
+    // printf("----- MY_LIST_REMOVE_IF -----\n");
+    // // void (*free_fct)(void *) = free;
+    // list_remove_if(&list, "Node 2", (int (*)())cmp, free_fct);
+    // current = list;
+    // printf("After removing 'Node 2':\n");
+    // while (current) {
+    //     printf("Node data: %s\n", (char *)current->data);
+    //     current = current->next;
+    // }
+    // // Free remaining nodes
+    // while (list) {
+    //     t_list *temp = list;
+    //     list = list->next;
+    //     free(temp);
+    // }
 
     return 0;
 }

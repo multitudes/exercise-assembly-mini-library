@@ -34,7 +34,7 @@ The `ar rcs` command:
 
 I will rewrite the following C functions in assembly:
 - strlen (man 3 strlen)
-- strcpy (man 3 strcpy)
+- my_strcpy (man 3 my_strcpy)
 - strcmp (man 3 strcmp)
 - write (man 2 write)
 - read (man 2 read)

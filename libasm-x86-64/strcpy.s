@@ -1,7 +1,7 @@
 section	.text
-global	strcpy                          
+global	my_strcpy                          
 
-; strcpy(char *dest, const char *src)
+; my_strcpy(char *dest, const char *src)
 ; ------------------------------------------
 ; Copies the string pointed to by src (including the null terminator)
 ; to the buffer pointed to by dest.
@@ -10,7 +10,7 @@ global	strcpy
 ;   rsi: pointer to source string (src)
 ; Returns: pointer to destination buffer (dest) in rax
 
-strcpy:
+my_strcpy:
     mov rax, rdi        ; Save original destination pointer for the return value.
 
 .loop:
